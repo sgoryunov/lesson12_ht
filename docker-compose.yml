@@ -1,4 +1,3 @@
-
 version: '3'
 services:
   bld:
@@ -9,26 +8,27 @@ services:
     command: mvn clean install
 
   prod:
-    image: tomcat:8.0-alpine
+    build:
+      context: .
+      args:
+        db_user: devops12
+        db_passwd: secret12
+        dp_port: 3306
+        db_ip: db
+        db_name: database
     ports:
       - "80:8080"
     depends_on:
       - bld
       - db
-    volumes:
-      - ./target/App42PaaS-Java-MySQL-Sample-0.0.1-SNAPSHOT.war:/usr/local/tomcat/webapps/App42PaaS.war
-      - ./WebContent/Config.properties:/usr/local/tomcat/ROOT/Config.properties
   db:
     image: mariadb:10.1
-#    ports:
-#    - "8514"
     environment:
-      - MYSQL_ROOT_PASSWORD=secret
-      - MYSQL_USER=acp4pogynvaeidfj
-      - MYSQL_PASSWORD=jc31d2qyy7h9jv5jn1u9uosjksxzaizw
-      - MYSQL_DATABASE=dd
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_USER: devops12
+      MYSQL_PASSWORD: secret12
+      MYSQL_DATABASE: database
     volumes:
       - dbdata:/var/lib/mysql
 volumes:
   dbdata:
-
